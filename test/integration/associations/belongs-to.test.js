@@ -624,12 +624,12 @@ describe(Support.getTestDialectTeaser('BelongsTo'), () => {
 
                 const tableName = user.sequelize.getQueryInterface().QueryGenerator.addSchema(user.constructor);
                 return user.sequelize.getQueryInterface().update(user, tableName, {id: 999}, {id: user.id})
-                .then(() => {
-                  return Task.findAll().then(tasks => {
-                    expect(tasks).to.have.length(1);
-                    expect(tasks[0].UserId).to.equal(999);
+                  .then(() => {
+                    return Task.findAll().then(tasks => {
+                      expect(tasks).to.have.length(1);
+                      expect(tasks[0].UserId).to.equal(999);
+                    });
                   });
-                });
               });
             });
           });
@@ -879,33 +879,31 @@ describe('Association', () => {
         allowNull: false
       }
     });
-    return this.sequelize.sync({ force: true })
-    .then(() => User.create({}))
-    .then(() => Mail.create({}))
-    .then(mail =>
-      Entry.create({ mailId: mail.id, ownerId: 1 })
-        .then(() => Entry.create({ mailId: mail.id, ownerId: 1 }))
-        // set recipients
-        .then(() => mail.setRecipients([1]))
-    )
-    .then(() => Entry.findAndCount({
-      offset: 0,
-      limit: 10,
-      order: [['id', 'DESC']],
-      include: [
-        {
-          association: Entry.associations.mail,
-          include: [
-            {
-              association: Mail.associations.recipients,
-              through: {
-                where: {
-                  recipientId: 1
+    return this.sequelize.sync({ force: true }).then(() => User.create({})).then(() => Mail.create({}))
+      .then(mail =>
+        Entry.create({ mailId: mail.id, ownerId: 1 })
+          .then(() => Entry.create({ mailId: mail.id, ownerId: 1 }))
+          // set recipients
+          .then(() => mail.setRecipients([1]))
+      )
+      .then(() => Entry.findAndCount({
+        offset: 0,
+        limit: 10,
+        order: [['id', 'DESC']],
+        include: [
+          {
+            association: Entry.associations.mail,
+            include: [
+              {
+                association: Mail.associations.recipients,
+                through: {
+                  where: {
+                    recipientId: 1
+                  }
                 }
-              }
-            }]
-        }]
-    })
-    );
+              }]
+          }]
+      })
+      );
   });
 });

@@ -22,7 +22,7 @@ const qq = function(str) {
   } else if (dialect === 'mysql' || dialect === 'sqlite') {
     return '`' + str + '`';
   } else if (dialect === 'oracle') {
-    if(str.indexOf('.') > -1) {
+    if (str.indexOf('.') > -1) {
       return `"${str}"`;
     }
     return str.replace('user', '"user"');
@@ -33,8 +33,8 @@ const qq = function(str) {
 
 //Function adding the from dual clause for Oracle requests
 const formatQuery = (qry, force) => {
-  if(dialect === 'oracle' && ((qry.indexOf('FROM') === -1) || force !== undefined && force)) {
-    if(qry.charAt(qry.length - 1) === ';') {
+  if (dialect === 'oracle' && ((qry.indexOf('FROM') === -1) || force !== undefined && force)) {
+    if (qry.charAt(qry.length - 1) === ';') {
       qry = qry.substr(0, qry.length -1);
     }
     return qry + ' FROM DUAL';
@@ -309,10 +309,10 @@ describe(Support.getTestDialectTeaser('Sequelize'), () => {
             ") VALUES ('john', 'john@gmail.com', 'HORSE', '2012-01-01 10:10:10')";
 
           return sequelize.query(insertWarningQuery)
-          .then(() => {
-            expect(logger.callCount).to.equal(3);
-            expect(logger.args[2][0]).to.be.match(/^MySQL Warnings \(default\):.*?'createdAt'/m);
-          });
+            .then(() => {
+              expect(logger.callCount).to.equal(3);
+              expect(logger.args[2][0]).to.be.match(/^MySQL Warnings \(default\):.*?'createdAt'/m);
+            });
         });
       }
 
@@ -563,6 +563,9 @@ describe(Support.getTestDialectTeaser('Sequelize'), () => {
         if (dialect === 'postgres' || dialect === 'sqlite') {
           expect(logSql.indexOf('$1')).to.be.above(-1);
           expect(logSql.indexOf('$2')).to.be.above(-1);
+        } else if (dialect === 'mssql') {
+          expect(logSql.indexOf('@0')).to.be.above(-1);
+          expect(logSql.indexOf('@1')).to.be.above(-1);
         }
       });
     });

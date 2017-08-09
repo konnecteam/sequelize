@@ -97,7 +97,7 @@ describe(Support.getTestDialectTeaser('HasOne'), () => {
       });
     }
 
-    if(Support.getTestDialect() !== 'oracle') {
+    if (Support.getTestDialect() !== 'oracle') {
       it('should be able to handle a where object that\'s a first class citizen.', function() {
         const User = this.sequelize.define('UserXYZ', { username: Sequelize.STRING }),
           Task = this.sequelize.define('TaskXYZ', { title: Sequelize.STRING, status: Sequelize.STRING });
@@ -252,24 +252,24 @@ describe(Support.getTestDialectTeaser('HasOne'), () => {
           Task.create({id: 20, title: 'bar'})
         ]);
       })
-      .spread((user, task) => {
-        return user.setTaskXYZ(task.id)
-          .then(() => user.getTaskXYZ())
-          .then(task => {
-            expect(task).not.to.be.null;
-            return Promise.all([
-              user,
-              Task.create({id: 2, title: 'bar2'})
-            ]);
-          });
-      })
-      .spread((user, task2) => {
-        return user.setTaskXYZ(task2.id)
-          .then(() => user.getTaskXYZ())
-          .then(task => {
-            expect(task).not.to.be.null;
-          });
-      });
+        .spread((user, task) => {
+          return user.setTaskXYZ(task.id)
+            .then(() => user.getTaskXYZ())
+            .then(task => {
+              expect(task).not.to.be.null;
+              return Promise.all([
+                user,
+                Task.create({id: 2, title: 'bar2'})
+              ]);
+            });
+        })
+        .spread((user, task2) => {
+          return user.setTaskXYZ(task2.id)
+            .then(() => user.getTaskXYZ())
+            .then(task => {
+              expect(task).not.to.be.null;
+            });
+        });
     });
 
     it('supports setting same association twice', function() {

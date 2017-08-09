@@ -183,7 +183,7 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
           let assertVal = 'VARCHAR(255)';
           switch (dialect) {
             case 'postgres':
-              assertVal = 'CHARACTER VARYING';
+              assertVal = 'CHARACTER VARYING(255)';
               break;
             case 'mssql':
               assertVal = 'NVARCHAR';
@@ -569,7 +569,7 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
     }
   });
 
-    //SQlite navitely doesnt support ALTER Foreign key
+  //SQlite navitely doesnt support ALTER Foreign key
   if (dialect !== 'sqlite') {
     describe('should support foreign keys', () => {
       beforeEach(function() {
@@ -890,9 +890,9 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
       }).then(fks => {
         if (dialect === 'mysql') {
           return self.sequelize.query(
-              self.queryInterface.QueryGenerator.getForeignKeyQuery('hosts', 'admin'),
-              {}
-            )
+            self.queryInterface.QueryGenerator.getForeignKeyQuery('hosts', 'admin'),
+            {}
+          )
             .spread(fk => {
               expect(fks[0]).to.deep.eql(fk[0]);
             });
@@ -922,17 +922,17 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
         return this.queryInterface.addConstraint('users', ['email'], {
           type: 'unique'
         })
-        .then(() => this.queryInterface.showConstraint('users'))
-        .then(constraints => {
-          constraints = constraints.map(constraint => constraint.constraintName);
-          expect(constraints).to.include('users_email_uk');
-          return this.queryInterface.removeConstraint('users', 'users_email_uk');
-        })
-        .then(() => this.queryInterface.showConstraint('users'))
-        .then(constraints => {
-          constraints = constraints.map(constraint => constraint.constraintName);
-          expect(constraints).to.not.include('users_email_uk');
-        });
+          .then(() => this.queryInterface.showConstraint('users'))
+          .then(constraints => {
+            constraints = constraints.map(constraint => constraint.constraintName);
+            expect(constraints).to.include('users_email_uk');
+            return this.queryInterface.removeConstraint('users', 'users_email_uk');
+          })
+          .then(() => this.queryInterface.showConstraint('users'))
+          .then(constraints => {
+            constraints = constraints.map(constraint => constraint.constraintName);
+            expect(constraints).to.not.include('users_email_uk');
+          });
       });
     });
 
@@ -946,17 +946,17 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
             },
             name: 'check_user_roles'
           })
-          .then(() => this.queryInterface.showConstraint('users'))
-          .then(constraints => {
-            constraints = constraints.map(constraint => constraint.constraintName);
-            expect(constraints).to.include('check_user_roles');
-            return this.queryInterface.removeConstraint('users', 'check_user_roles');
-          })
-          .then(() => this.queryInterface.showConstraint('users'))
-          .then(constraints => {
-            constraints = constraints.map(constraint => constraint.constraintName);
-            expect(constraints).to.not.include('check_user_roles');
-          });
+            .then(() => this.queryInterface.showConstraint('users'))
+            .then(constraints => {
+              constraints = constraints.map(constraint => constraint.constraintName);
+              expect(constraints).to.include('check_user_roles');
+              return this.queryInterface.removeConstraint('users', 'check_user_roles');
+            })
+            .then(() => this.queryInterface.showConstraint('users'))
+            .then(constraints => {
+              constraints = constraints.map(constraint => constraint.constraintName);
+              expect(constraints).to.not.include('check_user_roles');
+            });
         });
       });
     }
@@ -968,17 +968,17 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
             type: 'default',
             defaultValue: 'guest'
           })
-          .then(() => this.queryInterface.showConstraint('users'))
-          .then(constraints => {
-            constraints = constraints.map(constraint => constraint.constraintName);
-            expect(constraints).to.include('users_roles_df');
-            return this.queryInterface.removeConstraint('users', 'users_roles_df');
-          })
-          .then(() => this.queryInterface.showConstraint('users'))
-          .then(constraints => {
-            constraints = constraints.map(constraint => constraint.constraintName);
-            expect(constraints).to.not.include('users_roles_df');
-          });
+            .then(() => this.queryInterface.showConstraint('users'))
+            .then(constraints => {
+              constraints = constraints.map(constraint => constraint.constraintName);
+              expect(constraints).to.include('users_roles_df');
+              return this.queryInterface.removeConstraint('users', 'users_roles_df');
+            })
+            .then(() => this.queryInterface.showConstraint('users'))
+            .then(constraints => {
+              constraints = constraints.map(constraint => constraint.constraintName);
+              expect(constraints).to.not.include('users_roles_df');
+            });
         });
       });
     }
@@ -987,74 +987,74 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
     describe('primary key', () => {
       it('should add, read & remove primary key constraint', function() {
         return this.queryInterface.removeColumn('users', 'id')
-        .then(() => {
-          return this.queryInterface.changeColumn('users', 'username', {
-            type: DataTypes.STRING,
-            allowNull: false
+          .then(() => {
+            return this.queryInterface.changeColumn('users', 'username', {
+              type: DataTypes.STRING,
+              allowNull: false
+            });
+          })
+          .then(() => {
+            return this.queryInterface.addConstraint('users', ['username'], {
+              type: 'PRIMARY KEY'
+            });
+          })
+          .then(() => this.queryInterface.showConstraint('users'))
+          .then(constraints => {
+            constraints = constraints.map(constraint => constraint.constraintName);
+            //The name of primaryKey constraint is always PRIMARY in case of mysql
+            if (dialect === 'mysql') {
+              expect(constraints).to.include('PRIMARY');
+              return this.queryInterface.removeConstraint('users', 'PRIMARY');
+            } else {
+              expect(constraints).to.include('users_username_pk');
+              return this.queryInterface.removeConstraint('users', 'users_username_pk');
+            }
+          })
+          .then(() => this.queryInterface.showConstraint('users'))
+          .then(constraints => {
+            constraints = constraints.map(constraint => constraint.constraintName);
+            expect(constraints).to.not.include('users_username_pk');
           });
-        })
-        .then(() => {
-          return this.queryInterface.addConstraint('users', ['username'], {
-            type: 'PRIMARY KEY'
-          });
-        })
-        .then(() => this.queryInterface.showConstraint('users'))
-        .then(constraints => {
-          constraints = constraints.map(constraint => constraint.constraintName);
-          //The name of primaryKey constraint is always PRIMARY in case of mysql
-          if (dialect === 'mysql') {
-            expect(constraints).to.include('PRIMARY');
-            return this.queryInterface.removeConstraint('users', 'PRIMARY');
-          } else {
-            expect(constraints).to.include('users_username_pk');
-            return this.queryInterface.removeConstraint('users', 'users_username_pk');
-          }
-        })
-        .then(() => this.queryInterface.showConstraint('users'))
-        .then(constraints => {
-          constraints = constraints.map(constraint => constraint.constraintName);
-          expect(constraints).to.not.include('users_username_pk');
-        });
       });
     });
 
     describe('foreign key', () => {
       it('should add, read & remove foreign key constraint', function() {
         return this.queryInterface.removeColumn('users', 'id')
-        .then(() => {
-          return this.queryInterface.changeColumn('users', 'username', {
-            type: DataTypes.STRING,
-            allowNull: false
+          .then(() => {
+            return this.queryInterface.changeColumn('users', 'username', {
+              type: DataTypes.STRING,
+              allowNull: false
+            });
+          })
+          .then(() => {
+            return this.queryInterface.addConstraint('users', {
+              type: 'PRIMARY KEY',
+              fields: ['username']
+            });
+          })
+          .then(() => {
+            return this.queryInterface.addConstraint('posts', ['username'], {
+              references: {
+                table: 'users',
+                field: 'username'
+              },
+              onDelete: 'cascade',
+              onUpdate: 'cascade',
+              type: 'foreign key'
+            });
+          })
+          .then(() => this.queryInterface.showConstraint('posts'))
+          .then(constraints => {
+            constraints = constraints.map(constraint => constraint.constraintName);
+            expect(constraints).to.include('posts_username_users_fk');
+            return this.queryInterface.removeConstraint('posts', 'posts_username_users_fk');
+          })
+          .then(() => this.queryInterface.showConstraint('posts'))
+          .then(constraints => {
+            constraints = constraints.map(constraint => constraint.constraintName);
+            expect(constraints).to.not.include('posts_username_users_fk');
           });
-        })
-        .then(() => {
-          return this.queryInterface.addConstraint('users', {
-            type: 'PRIMARY KEY',
-            fields: ['username']
-          });
-        })
-        .then(() => {
-          return this.queryInterface.addConstraint('posts', ['username'], {
-            references: {
-              table: 'users',
-              field: 'username'
-            },
-            onDelete: 'cascade',
-            onUpdate: 'cascade',
-            type: 'foreign key'
-          });
-        })
-        .then(() => this.queryInterface.showConstraint('posts'))
-        .then(constraints => {
-          constraints = constraints.map(constraint => constraint.constraintName);
-          expect(constraints).to.include('posts_username_users_fk');
-          return this.queryInterface.removeConstraint('posts', 'posts_username_users_fk');
-        })
-        .then(() => this.queryInterface.showConstraint('posts'))
-        .then(constraints => {
-          constraints = constraints.map(constraint => constraint.constraintName);
-          expect(constraints).to.not.include('posts_username_users_fk');
-        });
       });
     });
 
