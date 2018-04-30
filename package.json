@@ -114,7 +114,7 @@
     "mocha": "--globals setImmediate,clearImmediate --ui tdd --exit --check-leaks --colors -t 30000 --reporter spec"
   },
   "scripts": {
-    "lint": "tsc && eslint src/lib src/test --quiet",
+    "lint": "tsc && tslint src/lib src/test --quiet",
     "test": "npm run teaser && npm run test-unit && npm run test-integration",
     "test-docker": "npm run test-docker-unit && npm run test-docker-integration",
     "test-docker-unit": "npm run test-unit",
