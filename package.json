@@ -89,7 +89,7 @@
     "tedious": "1.14.0",
     "tslint": "5.6.0",
     "tslint-eslint-rules": "4.1.1",
-    "typescript": "2.4.2",
+    "typescript": "2.8.1",
     "typings": "^2.1.0",
     "typings-core": "^2.2.0",
     "uuid-validate": "^0.0.2",
@@ -114,7 +114,8 @@
     "mocha": "--globals setImmediate,clearImmediate --ui tdd --exit --check-leaks --colors -t 30000 --reporter spec"
   },
   "scripts": {
-    "lint": "tsc && tslint src/lib src/test --quiet",
+    "build": "node_modules/typescript/bin/tsc",
+    "lint": "tslint src/lib src/test",
     "test": "npm run teaser && npm run test-unit && npm run test-integration",
     "test-docker": "npm run test-docker-unit && npm run test-docker-integration",
     "test-docker-unit": "npm run test-unit",

@@ -30,7 +30,7 @@ before_test:
   - ps: . .\appveyor-setup.ps1
 
 test_script:
-  - 'IF "%COVERAGE%" == "true" (npm run cover) ELSE (npm test)'
+  - 'IF "%COVERAGE%" == "true" (npm run build && npm run cover) ELSE (npm run build && npm test)'
 
 after_test:
   - ps: |
