@@ -16,25 +16,30 @@ if (current.dialect.supports.JSON) {
         it('plain string', () => {
           expectsql(sql.escape('string', { type: new DataTypes.JSON() }), {
             default: '\'"string"\'',
-            mysql: '\'\\"string\\"\''
+            mysql: '\'\\"string\\"\'',
+            mssql: 'N\'"string"\''
           });
         });
 
         it('plain int', () => {
           expectsql(sql.escape(0, { type: new DataTypes.JSON() }), {
-            default: '\'0\''
+            default: '\'0\'',
+            mssql: 'N\'0\'',
           });
           expectsql(sql.escape(123, { type: new DataTypes.JSON() }), {
-            default: '\'123\''
+            default: '\'123\'',
+            mssql: 'N\'123\''
           });
         });
 
         it('boolean', () => {
           expectsql(sql.escape(true, { type: new DataTypes.JSON() }), {
-            default: '\'true\''
+            default: '\'true\'',
+            mssql: 'N\'true\''
           });
           expectsql(sql.escape(false, { type: new DataTypes.JSON() }), {
-            default: '\'false\''
+            default: '\'false\'',
+            mssql: 'N\'false\''
           });
         });
 
@@ -47,7 +52,8 @@ if (current.dialect.supports.JSON) {
         it('nested object', () => {
           expectsql(sql.escape({ some: 'nested', more: { nested: true }, answer: 42 }, { type: new DataTypes.JSON() }), {
             default: '\'{"some":"nested","more":{"nested":true},"answer":42}\'',
-            mysql: '\'{\\"some\\":\\"nested\\",\\"more\\":{\\"nested\\":true},\\"answer\\":42}\''
+            mysql: '\'{\\"some\\":\\"nested\\",\\"more\\":{\\"nested\\":true},\\"answer\\":42}\'',
+            mssql: 'N\'{"some":"nested","more":{"nested":true},"answer":42}\'',
           });
         });
 
@@ -81,6 +87,8 @@ if (current.dialect.supports.JSON) {
           expectsql(sql.whereItemQuery(undefined, Sequelize.json({ id: 1 })), {
             postgres: '("id"#>>\'{}\') = \'1\'',
             sqlite: "json_extract(`id`, '$') = '1'",
+            // TODO AG, vérifier que le "." est ok
+            mssql: "JSON_VALUE([id], '$.') = '1'",
             mysql: "`id`->>'$.' = '1'"
           });
         });
@@ -89,6 +97,7 @@ if (current.dialect.supports.JSON) {
           expectsql(sql.whereItemQuery(undefined, Sequelize.json({ profile: { id: 1 } })), {
             postgres: '("profile"#>>\'{id}\') = \'1\'',
             sqlite: "json_extract(`profile`, '$.id') = '1'",
+            mssql: "JSON_VALUE([profile], '$.id') = '1'",
             mysql: "`profile`->>'$.id' = '1'"
           });
         });
@@ -97,7 +106,8 @@ if (current.dialect.supports.JSON) {
           expectsql(sql.whereItemQuery(undefined, Sequelize.json({ property: { value: 1 }, another: { value: 'string' } })), {
             postgres: '("property"#>>\'{value}\') = \'1\' AND ("another"#>>\'{value}\') = \'string\'',
             sqlite: "json_extract(`property`, '$.value') = '1' AND json_extract(`another`, '$.value') = 'string'",
-            mysql: "`property`->>'$.value' = '1' and `another`->>'$.value' = 'string'"
+            mysql: "`property`->>'$.value' = '1' and `another`->>'$.value' = 'string'",
+            mssql: "JSON_VALUE([property], '$.value') = '1' and JSON_VALUE([another], '$.value') = 'string'"
           });
         });
 
@@ -105,7 +115,8 @@ if (current.dialect.supports.JSON) {
           expectsql(sql.whereItemQuery(Sequelize.json('profile.id'), '1'), {
             postgres: '("profile"#>>\'{id}\') = \'1\'',
             sqlite: "json_extract(`profile`, '$.id') = '1'",
-            mysql: "`profile`->>'$.id' = '1'"
+            mysql: "`profile`->>'$.id' = '1'",
+            mssql: "JSON_VALUE([profile], '$.id') = N'1'"
           });
         });
 
@@ -113,7 +124,9 @@ if (current.dialect.supports.JSON) {
           expectsql(sql.whereItemQuery(Sequelize.json('json'), '{}'), {
             postgres: '("json"#>>\'{}\') = \'{}\'',
             sqlite: "json_extract(`json`, '$') = '{}'",
-            mysql: "`json`->>'$.' = '{}'"
+            mysql: "`json`->>'$.' = '{}'",
+            // TODO AG Vérifier le $.
+            mssql: "JSON_VALUE([json], '$.') = N'{}'"
           });
         });
       });

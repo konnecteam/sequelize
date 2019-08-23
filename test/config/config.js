@@ -13,6 +13,8 @@ module.exports = {
   password: process.env.SEQ_PW   || null,
   database: process.env.SEQ_DB   || 'sequelize_test',
   host: process.env.SEQ_HOST || '127.0.0.1',
+  
+  logging: (sql) => console.log(sql),
   pool: {
     max: process.env.SEQ_POOL_MAX  || 5,
     idle: process.env.SEQ_POOL_IDLE || 30000

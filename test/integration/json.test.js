@@ -22,7 +22,14 @@ describe('model', () => {
       it('should tell me that a column is json', function() {
         return this.sequelize.queryInterface.describeTable('Users')
           .then(table => {
-            expect(table.emergency_contact.type).to.equal('JSON');
+            const jsonDialectType = {
+              oracle : 'CLOB',
+              mssql : 'NVARCHAR',
+              postgres : 'JSON',
+              mysql : 'JSON',
+              mariadb : 'JSON'
+            }
+            expect(table.emergency_contact.type).to.equal(jsonDialectType[this.sequelize.dialect.name]); 
           });
       });
 

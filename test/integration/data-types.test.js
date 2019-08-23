@@ -129,7 +129,7 @@ describe(Support.getTestDialectTeaser('DataTypes'), () => {
     delete Type.constructor.parse;
   };
 
-  if (current.dialect.supports.JSON) {
+  if (current.dialect.supports.JSON_NATIF_TYPE) {
     it('calls parse and stringify for JSON', () => {
       const Type = new Sequelize.JSON();
 
