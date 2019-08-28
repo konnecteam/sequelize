@@ -16,7 +16,7 @@ build_branch:
   # Push to NPM sequelize
   - ./npm-builder-tools/tasks/linux/common/push-to-gogit.sh no_git $CI_COMMIT_REF_NAME $KNT_ORIGINAL_PROJECT_PATH $KNT_PACKAGE_NAME
   # Push to NPM @konnect/sequelize
-  - node ./npm-builder-tools/tasks/common/get-project-name --name @konnect/sequelize
+  - node ./npm-builder-tools/tasks/common/set-project-name --name @konnect/sequelize
   - ./npm-builder-tools/tasks/linux/common/push-to-gogit.sh no_git $CI_COMMIT_REF_NAME $KNT_ORIGINAL_PROJECT_PATH @konnect/sequelize
   - ./npm-builder-tools/tasks/linux/common/clean-tmp.sh
   only:
@@ -35,7 +35,7 @@ build_tag:
   # Push to NPM sequelize
   - ./npm-builder-tools/tasks/linux/common/push-to-gogit.sh no_git tag $KNT_ORIGINAL_PROJECT_PATH $KNT_PACKAGE_NAME
   # Push to NPM @konnect/sequelize
-  - node ./npm-builder-tools/tasks/common/get-project-name --name @konnect/sequelize
+  - node ./npm-builder-tools/tasks/common/set-project-name --name @konnect/sequelize
   - ./npm-builder-tools/tasks/linux/common/push-to-gogit.sh no_git tag $KNT_ORIGINAL_PROJECT_PATH @konnect/sequelize
   - ./npm-builder-tools/tasks/linux/common/clean-tmp.sh
   only:
