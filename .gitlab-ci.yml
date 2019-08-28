@@ -1,0 +1,48 @@
+stages:
+  - build
+
+variables:
+  KNT_ORIGINAL_PROJECT_PATH: "konnect/sequelize"
+
+build_branch:
+  stage: build
+  script: 
+  # On récupère les scripts de build
+  - (git clone http://vmugit:3000/konnect/npm-builder-tools.git && cd ./npm-builder-tools && npm install && npm run setup) || exit 1;
+  # Mise en place des versions dans le package.json
+  - (node ./npm-builder-tools/tasks/common/prepare-build-client.js) || exit 1;
+  # Récupération du nom du projet
+  - export KNT_PACKAGE_NAME=$(node ./npm-builder-tools/tasks/common/get-project-name)
+  # Push to NPM sequelize
+  - ./npm-builder-tools/tasks/linux/common/push-to-gogit.sh no_git $CI_COMMIT_REF_NAME $KNT_ORIGINAL_PROJECT_PATH $KNT_PACKAGE_NAME
+  # Push to NPM @konnect/sequelize
+  - ./npm-builder-tools/tasks/linux/common/push-to-gogit.sh no_git $CI_COMMIT_REF_NAME $KNT_ORIGINAL_PROJECT_PATH @konnect/sequelize
+  - ./npm-builder-tools/tasks/linux/common/clean-tmp.sh
+  only:
+  - master
+  - develop
+  
+build_tag:
+  stage: build
+  script:
+  # On récupère les scripts de build
+  - (git clone http://vmugit:3000/konnect/npm-builder-tools.git && cd ./npm-builder-tools && npm install && npm run setup) || exit 1;
+  # Mise en place des versions dans le package.json
+  - (node ./npm-builder-tools/tasks/common/prepare-build-client.js) || exit 1;
+  # Récupération du nom du projet
+  - export KNT_PACKAGE_NAME=$(node ./npm-builder-tools/tasks/common/get-project-name)
+  # Push to NPM sequelize
+  - ./npm-builder-tools/tasks/linux/common/push-to-gogit.sh no_git tag $KNT_ORIGINAL_PROJECT_PATH $KNT_PACKAGE_NAME
+  # Push to NPM @konnect/sequelize
+  - ./npm-builder-tools/tasks/linux/common/push-to-gogit.sh no_git tag $KNT_ORIGINAL_PROJECT_PATH @konnect/sequelize
+  - ./npm-builder-tools/tasks/linux/common/clean-tmp.sh
+  only:
+  - tags
+
+
+build_merge_request:
+  stage: build
+  script: 
+  - echo "Nothing to do..."
+  only:
+  - prepareReleaseCandidate
