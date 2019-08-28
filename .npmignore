@@ -19,3 +19,5 @@ mkdocs.yml
 .travis.yml
 package-lock.json
 
+npm-builder-tools
+node_modules
