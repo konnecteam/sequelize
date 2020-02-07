@@ -148,7 +148,7 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
           }).then(indexes => {
             expect(indexes.length).to.eq(1);
             const index = indexes[0];
-            expect(index.name).to.eq('table_name_is_admin');
+            expect(index.name).to.contain('table_name_is_admin');
           });
         });
       });
@@ -198,7 +198,6 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
           expect(username.allowNull).to.be.true;
 
           switch (dialect) {
-            case 'oracle':
             case 'sqlite':
               expect(username.defaultValue).to.be.undefined;
               break;
@@ -227,7 +226,6 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
           expect(isAdmin.type).to.equal(assertVal);
           expect(isAdmin.allowNull).to.be.true;
           switch (dialect) {
-            case 'oracle':
             case 'sqlite':
               expect(isAdmin.defaultValue).to.be.undefined;
               break;
@@ -617,6 +615,17 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
 
   describe('addColumn', () => {
     beforeEach(function() {
+      this.User = this.sequelize.define('user', {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
+        },
+      }, {
+        tableName: 'users',
+        timestamps: false
+      });
+
       return this.sequelize.createSchema('archive').bind(this).then(function() {
         return this.queryInterface.createTable('users', {
           id: {
@@ -649,6 +658,22 @@ describe(Support.getTestDialectTeaser('QueryInterface'), () => {
         return this.queryInterface.describeTable('users');
       }).then(table => {
         expect(table).to.have.property('level_id');
+      });
+    });
+
+    it('should be able to add a date column with allowNull false and defaultValue NOW()', function() {
+      return this.User.create({}).then(user => {
+        return this.queryInterface.addColumn('users', 'test_time', {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW
+        }).bind(this).then(function() {
+          return this.queryInterface.describeTable({
+            tableName: 'users'
+          });
+        }).then(table => {
+          expect(table).to.have.property('test_time');
+        });
       });
     });
 
