@@ -214,26 +214,29 @@ describe(Support.getTestDialectTeaser('Model'), () => {
     });
 
     it('returns proper defaultValues after save when setter is set', function() {
-      const titleSetter = sinon.spy(),
-        Task = this.sequelize.define('TaskBuild', {
-          title: {
-            type: Sequelize.STRING(50),
-            allowNull: false,
-            defaultValue: ''
-          }
-        }, {
-          setterMethods: {
-            title: titleSetter
-          }
-        });
+      //Impossible to test a string default value to '' with allowNull to false because oracle treats '' as a NULL value .... silly oracle
+      if (dialect !== 'oracle') {
+        const titleSetter = sinon.spy(),
+          Task = this.sequelize.define('TaskBuild', {
+            title: {
+              type: Sequelize.STRING(50),
+              allowNull: false,
+              defaultValue: ''
+            }
+          }, {
+            setterMethods: {
+              title: titleSetter
+            }
+          });
 
-      return Task.sync({force: true}).then(() => {
-        return Task.build().save().then(record => {
-          expect(record.title).to.be.a('string');
-          expect(record.title).to.equal('');
-          expect(titleSetter.notCalled).to.be.ok; // The setter method should not be invoked for default values
+        return Task.sync({force: true}).then(() => {
+          return Task.build().save().then(record => {
+            expect(record.title).to.be.a('string');
+            expect(record.title).to.equal('');
+            expect(titleSetter.notCalled).to.be.ok; // The setter method should not be invoked for default values
+          });
         });
-      });
+      }
     });
 
     it('should work with both paranoid and underscored being true', function() {
@@ -2369,7 +2372,7 @@ describe(Support.getTestDialectTeaser('Model'), () => {
             } else if (dialect === 'mssql') {
               expect(sql).to.match(/REFERENCES\s+\[prefix\]\.\[UserPubs\] \(\[id\]\)/);
             }  else if (dialect === 'oracle') {
-              expect(sql).to.match(/REFERENCES\s+prefix\.UserPubs \(id\)/);
+              expect(sql).to.match(/REFERENCES\s+prefix\_UserPubs \(id\)/);
             } else {
               expect(sql).to.match(/REFERENCES\s+`prefix\.UserPubs` \(`id`\)/);
             }
@@ -2406,7 +2409,7 @@ describe(Support.getTestDialectTeaser('Model'), () => {
               expect(self.UserSpecialSync.getTableName().toString()).to.equal('[special].[UserSpecials]');
               expect(UserPublic.indexOf('INSERT INTO [UserPublics]')).to.be.above(-1);
             } else if (dialect === 'oracle') {
-              expect(self.UserSpecialSync.getTableName().toString()).to.equal('special.UserSpecials');
+              expect(self.UserSpecialSync.getTableName().toString()).to.equal('special_UserSpecials');
               expect(UserPublic.indexOf('INSERT INTO UserPublics')).to.be.above(-1);
             } else {
               expect(self.UserSpecialSync.getTableName().toString()).to.equal('`special.UserSpecials`');
@@ -2424,7 +2427,7 @@ describe(Support.getTestDialectTeaser('Model'), () => {
               } else if (dialect === 'mssql') {
                 expect(UserSpecial.indexOf('INSERT INTO [special].[UserSpecials]')).to.be.above(-1);
               } else if (dialect === 'oracle') {
-                expect(UserSpecial.indexOf('INSERT INTO special.UserSpecials')).to.be.above(-1);
+                expect(UserSpecial.indexOf('INSERT INTO special_UserSpecials')).to.be.above(-1);
               } else {
                 expect(UserSpecial.indexOf('INSERT INTO `special.UserSpecials`')).to.be.above(-1);
               }
@@ -2438,7 +2441,7 @@ describe(Support.getTestDialectTeaser('Model'), () => {
                 } else if (dialect === 'mssql') {
                   expect(user.indexOf('UPDATE [special].[UserSpecials]')).to.be.above(-1);
                 } else if (dialect === 'oracle') {
-                  expect(user.indexOf('UPDATE special.UserSpecials')).to.be.above(-1);
+                  expect(user.indexOf('UPDATE special_UserSpecials')).to.be.above(-1);
                 } else {
                   expect(user.indexOf('UPDATE `special.UserSpecials`')).to.be.above(-1);
                 }
@@ -2609,10 +2612,10 @@ describe(Support.getTestDialectTeaser('Model'), () => {
               expect(user.data).to.be.an.instanceOf(Buffer);
               expect(user.data.toString()).to.have.string('Sequelize');
             } else {
-              //oracle returns a iLob Object, we have to read it
-              user.data.iLob.read((err, lobData) => {
+              //oracle getData to retrieve the blob value
+              user.data.getData().then( lobData => {
                 expect(lobData).to.be.an.instanceOf(Buffer);
-                expect(lobData.toString()).to.have.string('Sequelize');
+                expect(lobData.toString()).to.have.string('Sequelize');               
               });
             }
           });
@@ -2656,8 +2659,8 @@ describe(Support.getTestDialectTeaser('Model'), () => {
                 expect(user.data).to.be.an.instanceOf(Buffer);
                 expect(user.data.toString()).to.have.string('Sequelize');
               } else {
-                //oracle returns a iLob Object, we have to read it
-                user.data.iLob.read((err, lobData) => {
+                //oracle getData to retrieve the blob value
+                user.data.getData().then( lobData => {
                   expect(lobData).to.be.an.instanceOf(Buffer);
                   expect(lobData.toString()).to.have.string('Sequelize');
                 });

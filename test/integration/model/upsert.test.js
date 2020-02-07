@@ -215,7 +215,8 @@ describe(Support.getTestDialectTeaser('Model'), () => {
           expect(user.createdAt).to.be.ok;
           expect(user.username).to.equal('doe');
           if (dialect === 'oracle') {
-            user.blob.iLob.read((err, lobData) => {
+            //oracle getData to retrieve the blob value
+            user.blob.getData().then(lobData => {
               expect(lobData).to.be.an.instanceOf(Buffer);
               expect(lobData.toString()).to.have.string('andrea');
             });

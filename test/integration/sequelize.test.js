@@ -165,10 +165,11 @@ describe(Support.getTestDialectTeaser('Sequelize'), () => {
             .authenticate()
             .catch(err => {
               expect(
-                err.message.match(/connect ECONNREFUSED/) ||
-                err.message.match(/invalid port number/) ||
+                err.message.includes('connect ECONNREFUSED') ||
+                err.message.includes('invalid port number') ||
                 err.message.match(/should be >=? 0 and < 65536/) ||
-                err.message.match(/Login failed for user/) ||
+                err.message.includes('Login failed for user') ||
+                err.message.includes('must be > 0 and < 65536') ||
                 err.message.match(/ORA-12541/)
               ).to.be.ok;
             });
@@ -1052,7 +1053,7 @@ describe(Support.getTestDialectTeaser('Sequelize'), () => {
 
     if (dialect !== 'sqlite') {
       it('fails with incorrect database credentials (1)', function() {
-        this.sequelizeWithInvalidCredentials = new Sequelize('omg', 'bar', null, _.omit(this.sequelize.options, ['host']));
+        this.sequelizeWithInvalidCredentials = new Sequelize('omg', 'bar', null, this.sequelize.options);
 
         const User2 = this.sequelizeWithInvalidCredentials.define('User', { name: DataTypes.STRING, bio: DataTypes.TEXT });
 
