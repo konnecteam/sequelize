@@ -16,7 +16,7 @@ describe(Support.getTestDialectTeaser('Model'), () => {
   });
 
   beforeEach(function() {
-    this.User = this.sequelize.define('user', {
+    this.User = this.sequelize.define('User', {
       username: DataTypes.STRING,
       foo: {
         unique: 'foobar',
