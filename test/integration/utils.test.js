@@ -216,7 +216,7 @@ describe(Support.getTestDialectTeaser('Utils'), () => {
     });
   }
 
-  describe('inflection', () => {
+  describe('pluralize', () => {
     it('works better than lingo ;)', () => {
       expect(Utils.pluralize('buy')).to.equal('buys');
       expect(Utils.pluralize('holiday')).to.equal('holidays');
