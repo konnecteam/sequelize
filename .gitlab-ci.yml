@@ -12,7 +12,7 @@ build_branch:
   # On récupère les scripts de build
   - npm install --prefix $CI_PROJECT_DIR/.dglobal/ $KNT_BUILDER_TOOLS -g
   # Mise en place des versions dans le package.json
-  - (node .$KNT_PATH_BUILDER_TOOLS/tasks/common/prepare-build-client.js) || exit 1;
+  - (node $KNT_PATH_BUILDER_TOOLS/tasks/common/prepare-build-client.js) || exit 1;
   # Récupération du nom du projet
   - export KNT_PACKAGE_NAME=$(node $KNT_PATH_BUILDER_TOOLS/tasks/common/get-project-name)
   # Push to NPM sequelize
@@ -31,7 +31,7 @@ build_tag:
   # On récupère les scripts de build
   - npm install --prefix $CI_PROJECT_DIR/.dglobal/ $KNT_BUILDER_TOOLS -g
   # Mise en place des versions dans le package.json
-  - (node .$KNT_PATH_BUILDER_TOOLS/tasks/common/prepare-build-client.js) || exit 1;
+  - (node $KNT_PATH_BUILDER_TOOLS/tasks/common/prepare-build-client.js) || exit 1;
   # Récupération du nom du projet
   - export KNT_PACKAGE_NAME=$(node $KNT_PATH_BUILDER_TOOLS/tasks/common/get-project-name)
   # Push to NPM sequelize
