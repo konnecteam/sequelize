@@ -11,6 +11,10 @@ build_branch:
   script: 
   # On récupère les scripts de build
   - npm install --prefix $CI_PROJECT_DIR/.dglobal/ $KNT_BUILDER_TOOLS -g
+  # On installe les dépendances
+  - npm i
+  # Et on lance les tests
+  - npm run test-all
   # Mise en place des versions dans le package.json
   - (node $KNT_PATH_BUILDER_TOOLS/tasks/common/prepare-build-client.js) || exit 1;
   # Récupération du nom du projet
@@ -30,6 +34,10 @@ build_tag:
   script:
   # On récupère les scripts de build
   - npm install --prefix $CI_PROJECT_DIR/.dglobal/ $KNT_BUILDER_TOOLS -g
+  # On installe les dépendances
+  - npm i
+  # Et on lance les tests
+  - npm run test-all
   # Mise en place des versions dans le package.json
   - (node $KNT_PATH_BUILDER_TOOLS/tasks/common/prepare-build-client.js) || exit 1;
   # Récupération du nom du projet
