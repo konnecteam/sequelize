@@ -21,3 +21,5 @@ package-lock.json
 
 npm-builder-tools
 node_modules
+.gitlab-ci.yml
+.dglobal
