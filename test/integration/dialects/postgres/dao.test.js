@@ -42,7 +42,7 @@ if (dialect.match(/^postgres/) && Support.sequelize.dialect.supports.GEOMETRY) {
       this.sequelize.options.quoteIdentifiers = true;
     });
 
-    it.only('should be able to search within an array', function() {
+    it('should be able to search within an array', function() {
       return this.User.findAll({
         where: {
           email: ['hello', 'world']
