@@ -18,8 +18,10 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
       };
       const expectation = {
         default: ' LIMIT 10',
+        mysql : ' ORDER BY `tableRef`.`id` LIMIT 10',
         oracle: ' ORDER BY tableRef.id OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY',
-        mssql: ' ORDER BY [tableRef].[id] OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY'
+        mssql: ' ORDER BY [tableRef].[id] OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY',
+        postgres: ' ORDER BY "tableRef"."id" LIMIT 10'
       };
       expectsql(
         queryGenerator.addLimitAndOffset(
@@ -83,7 +85,7 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
       };
       const expectation = {
         default: " LIMIT ''';DELETE FROM user'",
-        mysql: " LIMIT '\\';DELETE FROM user'",
+        mysql: " LIMIT ''';DELETE FROM user'",
         oracle: " OFFSET 0 ROWS FETCH NEXT ''';DELETE FROM user' ROWS ONLY",
         mssql: " OFFSET 0 ROWS FETCH NEXT N''';DELETE FROM user' ROWS ONLY"
       };
@@ -108,7 +110,7 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
         sqlite: " LIMIT ''';DELETE FROM user', 10",
         oracle: " OFFSET ''';DELETE FROM user' ROWS FETCH NEXT 10 ROWS ONLY",
         postgres: " LIMIT 10 OFFSET ''';DELETE FROM user'",
-        mysql: " LIMIT '\\';DELETE FROM user', 10",
+        mysql: " LIMIT ''';DELETE FROM user', 10",
         mssql: " OFFSET N''';DELETE FROM user' ROWS FETCH NEXT 10 ROWS ONLY"
       };
       expectsql(
