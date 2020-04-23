@@ -434,7 +434,8 @@ describe('Data types', () => {
         default: 'NOW',
         postgres: 'CURRENT_DATE',
         oracle: 'CURRENT_TIMESTAMP',
-        mssql: 'GETDATE()'
+        mssql: 'GETDATE()',
+        mysql : 'CURRENT_TIMESTAMP'
       });
     });
     
