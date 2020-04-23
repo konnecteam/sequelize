@@ -225,7 +225,7 @@ describe(Support.getTestDialectTeaser('Model'), () => {
     it('should override the default scope', () => {
       expect(Company.scope(['defaultScope', {method: ['complexFunction', 'qux']}])._scope).to.deep.equal({
         include: [{ model: Project }],
-        where: ['qux IN (SELECT foobar FROM some_sql_function(foo.bar))']
+        where: [{ active : true }, 'qux IN (SELECT foobar FROM some_sql_function(foo.bar))']
       });
     });
 
@@ -313,7 +313,7 @@ describe(Support.getTestDialectTeaser('Model'), () => {
       });
 
       expect(Company.scope('newIncludeScope')._scope).to.deep.equal({
-        attributes: ['id', 'updatedAt', 'foobar']
+        attributes: ['foobar', 'id', 'updatedAt']
       });
     });
 

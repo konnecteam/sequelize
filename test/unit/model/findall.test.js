@@ -81,9 +81,9 @@ describe(Support.getTestDialectTeaser('Model'), () => {
           }
         }).then(() => {
           expect(this.stub.getCall(0).args[2].attributes).to.deep.equal([
+            'foobar',
             'id',
-            'name',
-            'foobar'
+            'name'
           ]);
         });
       });
@@ -108,8 +108,8 @@ describe(Support.getTestDialectTeaser('Model'), () => {
           }
         }).then(() => {
           expect(this.stub.getCall(0).args[2].attributes).to.deep.equal([
-            'id',
-            'name'
+            'name',
+            'id'
           ]);
         });
       });

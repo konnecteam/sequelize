@@ -81,12 +81,12 @@ describe(Support.getTestDialectTeaser('Model'), () => {
           });
 
           expect(options.include[0].attributes).to.deep.equal([
+            'foobar',
             ['field_id', 'id'],
             'name',
             'createdAt',
             'updatedAt',
-            'ownerId',
-            'foobar'
+            'ownerId'
           ]);
         });
 
@@ -126,11 +126,11 @@ describe(Support.getTestDialectTeaser('Model'), () => {
           });
 
           expect(options.include[0].attributes).to.deep.equal([
+            'name',
             ['field_id', 'id'],
             'createdAt',
             'updatedAt',
-            'ownerId',
-            'name'
+            'ownerId'
           ]);
         });
       });
