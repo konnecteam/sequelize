@@ -1066,7 +1066,7 @@ describe(Support.getTestDialectTeaser('Sequelize'), () => {
               'password authentication failed for user "bar"'
             ].indexOf(err.message.trim()) !== -1).to.equal(true);
           } else if (dialect === 'mssql') {
-            expect(err.message).to.equal('Login failed for user \'bar\'.');
+            expect(err.message).to.equal('The "config.authentication.options.password" property must be of type string.');
           } else if (dialect === 'oracle') {
             expect(err.message).to.equal('NJS-007: invalid value for "password" in parameter 1');
           } else {
