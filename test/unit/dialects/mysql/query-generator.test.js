@@ -196,7 +196,7 @@ if (dialect === 'mysql') {
           context: QueryGenerator
         }, {
           arguments: ['myTable', {where: {name: "foo';DROP TABLE myTable;"}}],
-          expectation: "SELECT * FROM `myTable` WHERE `myTable`.`name` = 'foo\\';DROP TABLE myTable;';",
+          expectation: "SELECT * FROM `myTable` WHERE `myTable`.`name` = 'foo'';DROP TABLE myTable;';",
           context: QueryGenerator
         }, {
           arguments: ['myTable', {where: 2}],
@@ -426,7 +426,7 @@ if (dialect === 'mysql') {
           expectation: "INSERT INTO `myTable` (`name`) VALUES ('foo');"
         }, {
           arguments: ['myTable', {name: "foo';DROP TABLE myTable;"}],
-          expectation: "INSERT INTO `myTable` (`name`) VALUES ('foo\\';DROP TABLE myTable;');"
+          expectation: "INSERT INTO `myTable` (`name`) VALUES ('foo'';DROP TABLE myTable;');"
         }, {
           arguments: ['myTable', {name: 'foo', birthday: new Date(Date.UTC(2011, 2, 27, 10, 1, 55))}],
           expectation: "INSERT INTO `myTable` (`name`,`birthday`) VALUES ('foo','2011-03-27 10:01:55');"
@@ -474,7 +474,7 @@ if (dialect === 'mysql') {
           expectation: "INSERT INTO `myTable` (`name`) VALUES ('foo'),('bar');"
         }, {
           arguments: ['myTable', [{name: "foo';DROP TABLE myTable;"}, {name: 'bar'}]],
-          expectation: "INSERT INTO `myTable` (`name`) VALUES ('foo\\';DROP TABLE myTable;'),('bar');"
+          expectation: "INSERT INTO `myTable` (`name`) VALUES ('foo'';DROP TABLE myTable;'),('bar');"
         }, {
           arguments: ['myTable', [{name: 'foo', birthday: new Date(Date.UTC(2011, 2, 27, 10, 1, 55))}, {name: 'bar', birthday: new Date(Date.UTC(2012, 2, 27, 10, 1, 55))}]],
           expectation: "INSERT INTO `myTable` (`name`,`birthday`) VALUES ('foo','2011-03-27 10:01:55'),('bar','2012-03-27 10:01:55');"
@@ -520,7 +520,7 @@ if (dialect === 'mysql') {
           expectation: "UPDATE `myTable` SET `bar`=2 WHERE `name` = 'foo'"
         }, {
           arguments: ['myTable', {name: "foo';DROP TABLE myTable;"}, {name: 'foo'}],
-          expectation: "UPDATE `myTable` SET `name`='foo\\';DROP TABLE myTable;' WHERE `name` = 'foo'"
+          expectation: "UPDATE `myTable` SET `name`='foo'';DROP TABLE myTable;' WHERE `name` = 'foo'"
         }, {
           arguments: ['myTable', {bar: 2, nullValue: null}, {name: 'foo'}],
           expectation: "UPDATE `myTable` SET `bar`=2,`nullValue`=NULL WHERE `name` = 'foo'"
