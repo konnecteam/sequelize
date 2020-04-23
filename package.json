@@ -41,7 +41,7 @@
     "debug": "^4.1.1",
     "depd": "^2.0.0",
     "dottie": "^2.0.0",
-    "generic-pool": "^3.5.0",
+    "generic-pool": "3.5.0",
     "js-crc": "^0.1.0",
     "lodash": "^4.17.15",
     "moment": "^2.13.0",
