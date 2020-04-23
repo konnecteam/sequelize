@@ -9,8 +9,8 @@ const chai = require('chai'),
   DataTypes = require(__dirname + '/../../../../lib/data-types'),
   sequelize = require(__dirname + '/../../../../lib/sequelize');
 
-if (dialect.match(/^postgres/)) {
-  describe('[POSTGRES Specific] DAO', () => {
+if (dialect.match(/^postgres/) && Support.sequelize.dialect.supports.GEOMETRY) {
+  describe.only('[POSTGRES Specific] DAO', () => {
     beforeEach(function() {
       this.sequelize.options.quoteIdentifiers = true;
       this.User = this.sequelize.define('User', {
@@ -42,7 +42,7 @@ if (dialect.match(/^postgres/)) {
       this.sequelize.options.quoteIdentifiers = true;
     });
 
-    it('should be able to search within an array', function() {
+    it.only('should be able to search within an array', function() {
       return this.User.findAll({
         where: {
           email: ['hello', 'world']
