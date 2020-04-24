@@ -17,7 +17,7 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
         model: {primaryKeyField: 'id', name: 'tableRef'}
       };
       const expectation = {
-        default: ' LIMIT 10',
+        default: ' ORDER BY `tableRef`.`id` LIMIT 10',
         mysql : ' ORDER BY `tableRef`.`id` LIMIT 10',
         oracle: ' ORDER BY tableRef.id OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY',
         mssql: ' ORDER BY [tableRef].[id] OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY',
