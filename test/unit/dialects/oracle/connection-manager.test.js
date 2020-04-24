@@ -15,10 +15,10 @@ describe('[ORACLE] Connection Manager', () => {
       //  expect(config.dialectOptions.domain).to.equal('TEST.COM');
       config = {
         dialect: 'oracle',
-        host: 'localhost',
-        database: 'localhost:1521/xe.oracle.docker',
-        username: 'sequelize',
-        password: 'sequelize'
+        host: process.env.NODE_ORACLEDB_HOST,
+        database:`${process.env.NODE_ORACLEDB_HOST}:${process.env.NODE_ORACLEDB_PORT}/${process.env.NODE_ORACLEDB_CONNECTIONSTRING}`,
+        username: process.env.NODE_ORACLEDB_USER,
+        password: process.env.NODE_ORACLEDB_PASSWORD
       };
       instance = new Sequelize(config.database, config.username, config.password, config);
 
@@ -39,10 +39,10 @@ describe('[ORACLE] Connection Manager', () => {
       //  expect(config.dialectOptions.domain).to.equal('TEST.COM');
       config = {
         dialect: 'oracle',
-        host: 'localhost',
-        username: 'sequelize',
-        password: 'sequelize',
-        database: 'xe.oracle.docker'
+        host: process.env.NODE_ORACLEDB_HOST,
+        username: process.env.NODE_ORACLEDB_USER,
+        password: process.env.NODE_ORACLEDB_PASSWORD,
+        database: process.env.NODE_ORACLEDB_CONNECTIONSTRING
       };
       instance = new Sequelize(config.database, config.username, config.password, config);
 
