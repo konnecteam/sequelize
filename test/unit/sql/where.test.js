@@ -57,7 +57,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
       const options={prefix: current.literal(queryGenerator.quoteTable.call(current.dialect.QueryGenerator, {schema: 'yolo', tableName: 'User'}))};
       const expectation={
         default: 'WHERE [yolo.User].[id] = 1',
-        oracle: 'WHERE yolo."User".id = 1',
+
+        oracle: 'WHERE yolo_User.id = 1',
         postgres: 'WHERE "yolo"."User"."id" = 1',
         mssql: 'WHERE [yolo].[User].[id] = 1'
       };
@@ -1261,7 +1262,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             postgres: "(\"profile\"#>>'{id}') = CAST('12346-78912' AS TEXT)",
             sqlite: "json_extract(`profile`, '$.id') = CAST('12346-78912' AS TEXT)",
             mysql: "`profile`->>'$.id' = CAST('12346-78912' AS CHAR)",
-            mssql: "JSON_VALUE([profile], '$.id') = CAST(N'12346-78912' AS CHAR)"
+            mssql: "JSON_VALUE([profile], '$.id') = CAST(N'12346-78912' AS CHAR)",
+            oracle: "JSON_VALUE(\"profile\", '$.id') = CAST('12346-78912' AS TEXT)"
           });
         });
 
@@ -1270,7 +1272,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             postgres: "(\"profile\"#>>'{id}') = '12346-78912' AND (\"profile\"#>>'{name}') = 'test'",
             sqlite: "json_extract(`profile`, '$.id') = '12346-78912' AND json_extract(`profile`, '$.name') = 'test'",
             mysql: "`profile`->>'$.id' = '12346-78912' and `profile`->>'$.name' = 'test'",
-            mssql: "JSON_VALUE([profile], '$.id') = '12346-78912' and JSON_VALUE([profile], '$.name') = 'test'"
+            mssql: "JSON_VALUE([profile], '$.id') = '12346-78912' and JSON_VALUE([profile], '$.name') = 'test'",
+            oracle: "JSON_VALUE(\"profile\", '$.id') = '12346-78912' and JSON_VALUE(\"profile\", '$.name') = 'test'"
           });
         });
 
@@ -1291,7 +1294,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "(`User`.`data`->>'$.\"nested\".\"attribute\"') = 'value'",
             postgres: "(\"User\".\"data\"#>>'{nested,attribute}') = 'value'",
             sqlite: "json_extract(`User`.`data`, '$.nested.attribute') = 'value'",
-            mssql: "JSON_VALUE([User].[data], N'$.nested.attribute') = N'value'"
+            mssql: "JSON_VALUE([User].[data], N'$.nested.attribute') = N'value'",
+            oracle: "JSON_VALUE(\"User\".data, '$.nested.attribute') = 'value'"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1312,7 +1316,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "CAST((`data`->>'$.\"nested\"') AS DECIMAL) IN (1, 2)",
             postgres: "CAST((\"data\"#>>'{nested}') AS DOUBLE PRECISION) IN (1, 2)",
             sqlite: "CAST(json_extract(`data`, '$.nested') AS DOUBLE PRECISION) IN (1, 2)",
-            mssql: "CAST(JSON_VALUE([data], N'$.nested') AS DECIMAL) IN (1, 2)"
+            mssql: "CAST(JSON_VALUE([data], N'$.nested') AS DECIMAL) IN (1, 2)",
+            oracle: "CAST(JSON_VALUE(data, '$.nested') AS NUMBER) IN (1, 2)"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1333,7 +1338,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "CAST((`data`->>'$.\"nested\"') AS DECIMAL) BETWEEN 1 AND 2",
             postgres: "CAST((\"data\"#>>'{nested}') AS DOUBLE PRECISION) BETWEEN 1 AND 2",
             sqlite: "CAST(json_extract(`data`, '$.nested') AS DOUBLE PRECISION) BETWEEN 1 AND 2",
-            mssql: "CAST(JSON_VALUE([data], N'$.nested') AS DECIMAL) BETWEEN 1 AND 2"
+            mssql: "CAST(JSON_VALUE([data], N'$.nested') AS DECIMAL) BETWEEN 1 AND 2",
+            oracle: "CAST(JSON_VALUE(data, '$.nested') AS NUMBER) BETWEEN 1 AND 2"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1358,7 +1364,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "((`User`.`data`->>'$.\"nested\".\"attribute\"') = 'value' AND (`User`.`data`->>'$.\"nested\".\"prop\"') != 'None')",
             postgres: "((\"User\".\"data\"#>>'{nested,attribute}') = 'value' AND (\"User\".\"data\"#>>'{nested,prop}') != 'None')",
             sqlite: "(json_extract(`User`.`data`, '$.nested.attribute') = 'value' AND json_extract(`User`.`data`, '$.nested.prop') != 'None')",
-            mssql: "(JSON_VALUE([User].[data], N'$.nested.attribute') = N'value' AND JSON_VALUE([User].[data], N'$.nested.prop') != N'None')"
+            mssql: "(JSON_VALUE([User].[data], N'$.nested.attribute') = N'value' AND JSON_VALUE([User].[data], N'$.nested.prop') != N'None')",
+            oracle: "(JSON_VALUE(\"User\".data, '$.nested.attribute') = 'value' AND JSON_VALUE(\"User\".data, '$.nested.prop') != 'None')"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1383,7 +1390,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "((`User`.`data`->>'$.\"name\".\"last\"') = 'Simpson' AND (`User`.`data`->>'$.\"employment\"') != 'None')",
             postgres: "((\"User\".\"data\"#>>'{name,last}') = 'Simpson' AND (\"User\".\"data\"#>>'{employment}') != 'None')",
             sqlite: "(json_extract(`User`.`data`, '$.name.last') = 'Simpson' AND json_extract(`User`.`data`, '$.employment') != 'None')",
-            mssql: "(JSON_VALUE([User].[data], N'$.name.last') = N'Simpson' AND JSON_VALUE([User].[data], N'$.employment') != N'None')"
+            mssql: "(JSON_VALUE([User].[data], N'$.name.last') = N'Simpson' AND JSON_VALUE([User].[data], N'$.employment') != N'None')",
+            oracle: "(JSON_VALUE(\"User\".data, '$.name.last') = 'Simpson' AND JSON_VALUE(\"User\".data, '$.employment') != 'None')"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1403,7 +1411,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "(CAST((`data`->>'$.\"price\"') AS DECIMAL) = 5 AND (`data`->>'$.\"name\"') = 'Product')",
             postgres: "(CAST((\"data\"#>>'{price}') AS DOUBLE PRECISION) = 5 AND (\"data\"#>>'{name}') = 'Product')",
             sqlite: "(CAST(json_extract(`data`, '$.price') AS DOUBLE PRECISION) = 5 AND json_extract(`data`, '$.name') = 'Product')",
-            mssql: "(CAST(JSON_VALUE([data], N'$.price') AS DECIMAL) = 5 AND JSON_VALUE([data], N'$.name') = N'Product')"
+            mssql: "(CAST(JSON_VALUE([data], N'$.price') AS DECIMAL) = 5 AND JSON_VALUE([data], N'$.name') = N'Product')",
+            oracle: "(CAST(JSON_VALUE(data, '$.price') AS NUMBER) = 5 AND JSON_VALUE(data, '$.name') = 'Product')"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1424,7 +1433,9 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "(`data`->>'$.\"nested\".\"attribute\"') = 'value'",
             postgres: "(\"data\"#>>'{nested,attribute}') = 'value'",
             sqlite: "json_extract(`data`, '$.nested.attribute') = 'value'",
-            mssql: "JSON_VALUE([data], N'$.nested.attribute') = N'value'"
+            mssql: "JSON_VALUE([data], N'$.nested.attribute') = N'value'",
+            oracle: "JSON_VALUE(data, '$.nested.attribute') = 'value'"
+
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1445,7 +1456,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "CAST((`data`->>'$.\"nested\".\"attribute\"') AS DECIMAL) = 4",
             postgres: "CAST((\"data\"#>>'{nested,attribute}') AS DOUBLE PRECISION) = 4",
             sqlite: "CAST(json_extract(`data`, '$.nested.attribute') AS DOUBLE PRECISION) = 4",
-            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS DECIMAL) = 4"
+            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS DECIMAL) = 4",
+            oracle: "CAST(JSON_VALUE(data, '$.nested.attribute') AS NUMBER) = 4"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1468,7 +1480,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "CAST((`data`->>'$.\"nested\".\"attribute\"') AS DECIMAL) IN (3, 7)",
             postgres: "CAST((\"data\"#>>'{nested,attribute}') AS DOUBLE PRECISION) IN (3, 7)",
             sqlite: "CAST(json_extract(`data`, '$.nested.attribute') AS DOUBLE PRECISION) IN (3, 7)",
-            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS DECIMAL) IN (3, 7)"
+            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS DECIMAL) IN (3, 7)",
+            oracle: "CAST(JSON_VALUE(data, '$.nested.attribute') AS NUMBER) IN (3, 7)"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1491,7 +1504,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "CAST((`data`->>'$.\"nested\".\"attribute\"') AS DECIMAL) > 2",
             postgres: "CAST((\"data\"#>>'{nested,attribute}') AS DOUBLE PRECISION) > 2",
             sqlite: "CAST(json_extract(`data`, '$.nested.attribute') AS DOUBLE PRECISION) > 2",
-            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS DECIMAL) > 2"
+            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS DECIMAL) > 2",
+            oracle: "CAST(JSON_VALUE(data, '$.nested.attribute') AS NUMBER) > 2"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1515,7 +1529,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "CAST((`data`->>'$.\"nested\".\"attribute\"') AS DATETIME) > "+queryGenerator.escape(dt),
             postgres: "CAST((\"data\"#>>'{nested,attribute}') AS TIMESTAMPTZ) > "+queryGenerator.escape(dt),
             sqlite: "json_extract(`data`, '$.nested.attribute') > " + queryGenerator.escape(dt.toISOString()),
-            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS DATETIMEOFFSET) > "+queryGenerator.escape(dt)
+            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS DATETIMEOFFSET) > "+queryGenerator.escape(dt),
+            oracle: "JSON_VALUE(data, '$.nested.attribute') > '" + dt.toISOString() + "'"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1536,7 +1551,8 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "(`data`->>'$.\"nested\".\"attribute\"') = 'true'",
             postgres: "CAST((\"data\"#>>'{nested,attribute}') AS BOOLEAN) = true",
             sqlite: "CAST(json_extract(`data`, '$.nested.attribute') AS BOOLEAN) = 1",
-            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS BIT) = 1"
+            mssql: "CAST(JSON_VALUE([data], N'$.nested.attribute') AS BIT) = 1",
+            oracle: "JSON_VALUE(data, '$.nested.attribute') = 'true'"
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
@@ -1559,7 +1575,9 @@ describe(Support.getTestDialectTeaser('SQL'), () => {
             mysql: "(`meta_data`->>'$.\"nested\".\"attribute\"') = 'value'",
             postgres: "(\"meta_data\"#>>'{nested,attribute}') = 'value'",
             sqlite: "json_extract(`meta_data`, '$.nested.attribute') = 'value'",
-            mssql: "JSON_VALUE([meta_data], N'$.nested.attribute') = N'value'"
+            mssql: "JSON_VALUE([meta_data], N'$.nested.attribute') = N'value'",
+            oracle: "JSON_VALUE(meta_data, '$.nested.attribute') = 'value'"
+
           };
           expectsql(queryGenerator.whereItemQuery(key, params, options), expectation);
         });
