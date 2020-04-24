@@ -87,6 +87,7 @@ if (current.dialect.supports.JSON) {
           expectsql(sql.whereItemQuery(undefined, Sequelize.json({ id: 1 })), {
             postgres: '("id"#>>\'{}\') = \'1\'',
             sqlite: "json_extract(`id`, '$') = '1'",
+            oracle: "JSON_VALUE(id, '$.') = '1'",
             // TODO AG, vérifier que le "." est ok
             mssql: "JSON_VALUE([id], '$.') = '1'",
             mysql: "`id`->>'$.' = '1'"
@@ -98,6 +99,7 @@ if (current.dialect.supports.JSON) {
             postgres: '("profile"#>>\'{id}\') = \'1\'',
             sqlite: "json_extract(`profile`, '$.id') = '1'",
             mssql: "JSON_VALUE([profile], '$.id') = '1'",
+            oracle: "JSON_VALUE(\"profile\", '$.id') = '1'",
             mysql: "`profile`->>'$.id' = '1'"
           });
         });
@@ -107,6 +109,7 @@ if (current.dialect.supports.JSON) {
             postgres: '("property"#>>\'{value}\') = \'1\' AND ("another"#>>\'{value}\') = \'string\'',
             sqlite: "json_extract(`property`, '$.value') = '1' AND json_extract(`another`, '$.value') = 'string'",
             mysql: "`property`->>'$.value' = '1' and `another`->>'$.value' = 'string'",
+            oracle: "JSON_VALUE(property, '$.value') = '1' and JSON_VALUE(another, '$.value') = 'string'",
             mssql: "JSON_VALUE([property], '$.value') = '1' and JSON_VALUE([another], '$.value') = 'string'"
           });
         });
@@ -116,6 +119,7 @@ if (current.dialect.supports.JSON) {
             postgres: '("profile"#>>\'{id}\') = \'1\'',
             sqlite: "json_extract(`profile`, '$.id') = '1'",
             mysql: "`profile`->>'$.id' = '1'",
+            oracle: "JSON_VALUE(\"profile\", '$.id') = '1'",
             mssql: "JSON_VALUE([profile], '$.id') = N'1'"
           });
         });
@@ -125,6 +129,7 @@ if (current.dialect.supports.JSON) {
             postgres: '("json"#>>\'{}\') = \'{}\'',
             sqlite: "json_extract(`json`, '$') = '{}'",
             mysql: "`json`->>'$.' = '{}'",
+            oracle: "JSON_VALUE(json, '$.') = '{}'",
             // TODO AG Vérifier le $.
             mssql: "JSON_VALUE([json], '$.') = N'{}'"
           });
