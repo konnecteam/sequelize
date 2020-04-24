@@ -27,7 +27,8 @@ describe('model', () => {
               mssql : 'NVARCHAR',
               postgres : 'JSON',
               mysql : 'JSON',
-              mariadb : 'JSON'
+              mariadb : 'JSON',
+              sqlite : 'JSON',
             }
             expect(table.emergency_contact.type).to.equal(jsonDialectType[this.sequelize.dialect.name]); 
           });
