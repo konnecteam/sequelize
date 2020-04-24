@@ -14,7 +14,7 @@ build_branch:
   # On installe les dépendances
   - npm i
   # lint
-  - npm run lint
+  #- npm run lint
   # Et on lance les tests
   - npm run test-all
   # Mise en place des versions dans le package.json
