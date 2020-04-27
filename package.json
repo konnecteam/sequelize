@@ -138,7 +138,7 @@
     "test-postgres-native": "cross-env DIALECT=postgres-native npm test",
     "test-postgresn": "npm run test-postgres-native",
     "test-mssql": "cross-env DIALECT=mssql npm test",
-    "test-all": "npm run test-mysql && npm run test-sqlite && npm run test-postgres && npm run test-postgres-native && npm run test-mssql && npm run test-oracle",
+    "test-all": "npm run test-mysql && npm run test-sqlite && npm run test-postgres && npm run test-mssql && npm run test-oracle",
     "cover": "rimraf coverage && npm run teaser && npm run cover-integration && npm run cover-unit && npm run merge-coverage",
     "cover-integration": "cross-env COVERAGE=true nyc --reporter=lcovonly mocha --require scripts/mocha-bootload -t 30000 --exit \"test/integration/**/*.test.js\" && node -e \"require('fs').renameSync('coverage/lcov.info', 'coverage/integration.info')\"",
     "cover-unit": "cross-env COVERAGE=true nyc --reporter=lcovonly mocha --require scripts/mocha-bootload -t 30000 --exit \"test/unit/**/*.test.js\" && node -e \"require('fs').renameSync('coverage/lcov.info', 'coverage/unit.info')\"",
