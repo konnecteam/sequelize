@@ -16,7 +16,7 @@ build_branch:
   # lint
   #- npm run lint
   # Et on lance les tests
-  # - npm run test-all
+  - npm run test-all
   # Mise en place des versions dans le package.json
   - (node $KNT_PATH_BUILDER_TOOLS/tasks/common/prepare-build-client.js) || exit 1;
   # Récupération du nom du projet
