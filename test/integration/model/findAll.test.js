@@ -210,6 +210,24 @@ describe(Support.getTestDialectTeaser('Model'), () => {
         });
       });
 
+      it('should be able to handle 0/1 values just fine...', function() {
+        const User = this.User;
+
+        return User.bulkCreate([
+          {username: 'boo5', aBool: false},
+          {username: 'boo6', aBool: true}
+        ]).then(() => {
+          return User.findAll({where: {aBool: { $ne : 1 }}}).then(users => {
+            expect(users).to.have.length(1);
+            expect(users[0].username).to.equal('boo5');
+            return User.findAll({where: {aBool: { $ne : 0}}}).then(_users => {
+              expect(_users).to.have.length(1);
+              expect(_users[0].username).to.equal('boo6');
+            });
+          });
+        });
+      });
+
       it('should be able to handle false/true values through associations as well...', function() {
         const User = this.User,
           Passports = this.sequelize.define('Passports', {
