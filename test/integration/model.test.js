@@ -2269,10 +2269,11 @@ describe(Support.getTestDialectTeaser('Model'), () => {
         expect(schemas).to.be.instanceof(Array);
 
         // FIXME: reenable when schema support is properly added
-        if (dialect !== 'mssql') {
+        // oracle "schema" are not namespaces
+        if (dialect !== 'mssql' && dialect !== 'oracle') {
           // sqlite & MySQL doesn't actually create schemas unless Model.sync() is called
           // Postgres supports schemas natively
-          expect(schemas).to.have.length((dialect === 'postgres' || dialect === 'oracle' ? 2 : 1));
+          expect(schemas).to.have.length((dialect === 'postgres' ? 2 : 1));
         }
 
       });
