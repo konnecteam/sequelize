@@ -86,12 +86,11 @@ if (dialect === 'mysql') {
       return sequelize
         .sync()
         .then(() => cm.getConnection())
-        .then(connection => {
+        .then(async connection => {
           // Save current connection
           conn = connection;
           // simulate a unexpected end from MySQL2
-          conn.stream.emit('end');
-
+          await conn.end();
           return cm.releaseConnection(connection);
         })
         .then(() => {
@@ -136,10 +135,9 @@ if (dialect === 'mysql') {
           conn = connection;
           return cm.releaseConnection(conn);
         })
-        .then(() => {
+        .then(async () => {
           // simulate a unexpected end from MySQL2 AFTER releasing the connection
-          conn.stream.emit('end');
-
+          conn.end();
           // Get next available connection
           return cm.getConnection();
         })
