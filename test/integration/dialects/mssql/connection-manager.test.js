@@ -93,7 +93,7 @@ if (dialect.match(/^mssql/)) {
 
       it('EHOSTUNREACH', () => {
         const sequelize = Support.createSequelizeInstance({ host: '255.255.255.255' });
-        return expect(sequelize.connectionManager.getConnection()).to.have.been.rejectedWith(sequelize.HostNotReachableError);
+        return expect(sequelize.connectionManager.getConnection()).to.have.been.rejectedWith(sequelize.ConnectionRefusedError);
       });
 
       it('ER_ACCESS_DENIED_ERROR | ELOGIN', () => {
