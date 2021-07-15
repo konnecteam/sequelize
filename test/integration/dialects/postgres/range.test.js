@@ -220,7 +220,8 @@ if (dialect.match(/^postgres/)) {
     describe('stringify and parse', () => {
       it('should stringify then parse back the same structure', () => {
         const testRange = [5, 10];
-        testRange.inclusive = [true, true];        const Range = new DataTypes.postgres.RANGE(DataTypes.INTEGER);
+        testRange.inclusive = [true, true];        
+        const Range = new DataTypes.postgres.RANGE(DataTypes.INTEGER);
 
         let stringified = Range.stringify(testRange, {});
         stringified = stringified.substr(1, stringified.length - 2); // Remove the escaping ticks
