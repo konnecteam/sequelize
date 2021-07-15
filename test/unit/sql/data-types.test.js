@@ -120,7 +120,7 @@ describe('Data types', () => {
       expectsql(result, {
         default: 'TEXT',
         mssql: 'NVARCHAR(MAX)',
-        oracle: 'NVARCHAR2(2000)',
+        oracle: 'CLOB',
         mysql: 'MEDIUMTEXT'
       });
     });
@@ -131,7 +131,7 @@ describe('Data types', () => {
       expectsql(result, {
         default: 'TEXT',
         mssql: 'NVARCHAR(MAX)',
-        oracle: 'NVARCHAR2(4000)',
+        oracle: 'CLOB',
         mysql: 'LONGTEXT'
       });
     });
