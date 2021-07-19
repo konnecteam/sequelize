@@ -80,12 +80,12 @@ if (dialect.match(/^postgres/)) {
 
       it('should stringify integer values with appropriate casting', () => {
         const Range = new DataTypes.postgres.RANGE(DataTypes.INTEGER);
-        expect(Range.stringify(1)).to.equal('\'1\'::integer');
+        expect(Range.stringify(1)).to.equal('\'1\'::int4');
       });
 
       it('should stringify bigint values with appropriate casting', () => {
         const Range = new DataTypes.postgres.RANGE(DataTypes.BIGINT);
-        expect(Range.stringify(1)).to.equal('\'1\'::bigint');
+        expect(Range.stringify(1)).to.equal('\'1\'::int8');
       });
 
       it('should stringify numeric values with appropriate casting', () => {
@@ -204,8 +204,14 @@ if (dialect.match(/^postgres/)) {
         expect(range.parse('some_non_array')).to.deep.equal('some_non_array');
       });
 
-      it('should handle native postgres timestamp format', () => {
-        const tsOid = DataTypes.postgres.DATE.types.postgres.oids[0],
+      it('should handle native postgres timestamp format', async () => {
+        // Make sure nameOidMap is loaded
+        const connection = await Support.sequelize.connectionManager.getConnection();
+
+        Support.sequelize.connectionManager.releaseConnection(connection);
+
+        const tsName = DataTypes.postgres.DATE.types.postgres[0],
+          tsOid = Support.sequelize.connectionManager.nameOidMap[tsName].oid,
           parser = pg.types.getTypeParser(tsOid);
         expect(range.parse('(2016-01-01 08:00:00-04,)', parser)[0].toISOString()).to.equal('2016-01-01T12:00:00.000Z');
       });
@@ -214,14 +220,13 @@ if (dialect.match(/^postgres/)) {
     describe('stringify and parse', () => {
       it('should stringify then parse back the same structure', () => {
         const testRange = [5, 10];
-        testRange.inclusive = [true, true];
-
+        testRange.inclusive = [true, true];        
         const Range = new DataTypes.postgres.RANGE(DataTypes.INTEGER);
 
         let stringified = Range.stringify(testRange, {});
         stringified = stringified.substr(1, stringified.length - 2); // Remove the escaping ticks
 
-        expect(DataTypes.postgres.RANGE.parse(stringified, 3904, () => { return DataTypes.postgres.INTEGER.parse; })).to.deep.equal(testRange);
+        expect(DataTypes.postgres.RANGE.parse(stringified, { parser: DataTypes.postgres.INTEGER.parse })).to.deep.equal(testRange);
       });
     });
   });
